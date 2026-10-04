@@ -1,0 +1,113 @@
+name: Nexo
+options:
+  bundleIdPrefix: com.kisnner26
+  deploymentTarget:
+    iOS: "26.0"
+    watchOS: "26.0"
+    macOS: "26.0"
+packages:
+  NexoCore:
+    path: Packages/NexoCore
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    GENERATE_INFOPLIST_FILE: NO
+    CODE_SIGN_STYLE: Automatic
+    DEVELOPMENT_TEAM: "$(NEXO_TEAM_ID)"
+targets:
+  NexoMac:
+    type: application
+    platform: macOS
+    sources: [Mac, Shared]
+    dependencies:
+      - package: NexoCore
+    info:
+      path: Mac/Info.plist
+      properties:
+        CFBundleDisplayName: Nexo
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        LSUIElement: true
+        LSMinimumSystemVersion: "26.0"
+        NSLocalNetworkUsageDescription: Nexo habla con tus dispositivos en la red local.
+        NSAppleEventsUsageDescription: Nexo ajusta el volumen de la Mac.
+        NSBonjourServices: [_nexo._tcp]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.kisnner26.nexo.mac
+        ENABLE_APP_SANDBOX: NO
+        ENABLE_HARDENED_RUNTIME: NO
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+  NexoPhone:
+    type: application
+    platform: iOS
+    sources: [Phone, PhoneShared, Shared]
+    entitlements:
+      path: Phone/Nexo.entitlements
+      properties:
+        com.apple.security.application-groups: [group.com.kisnner26.nexo]
+    dependencies:
+      - package: NexoCore
+      - target: NexoPhoneWidgets
+      - target: NexoWatch
+    info:
+      path: Phone/Info.plist
+      properties:
+        CFBundleDisplayName: Nexo
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
+        NSLocalNetworkUsageDescription: Nexo encuentra y controla tu Mac en la red local.
+        NSBonjourServices: [_nexo._tcp]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.kisnner26.nexo
+        TARGETED_DEVICE_FAMILY: "1"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+  NexoPhoneWidgets:
+    type: app-extension
+    platform: iOS
+    sources: [PhoneWidgets, PhoneShared]
+    entitlements:
+      path: PhoneWidgets/Nexo.entitlements
+      properties:
+        com.apple.security.application-groups: [group.com.kisnner26.nexo]
+    dependencies:
+      - package: NexoCore
+    info:
+      path: PhoneWidgets/Info.plist
+      properties:
+        CFBundleDisplayName: Nexo
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSLocalNetworkUsageDescription: Nexo controla tu Mac en la red local.
+        NSBonjourServices: [_nexo._tcp]
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.kisnner26.nexo.widgets
+        TARGETED_DEVICE_FAMILY: "1"
+  NexoWatch:
+    type: application
+    platform: watchOS
+    sources: [Watch, Shared]
+    dependencies:
+      - package: NexoCore
+    info:
+      path: Watch/Info.plist
+      properties:
+        CFBundleDisplayName: Nexo
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        WKApplication: true
+        WKCompanionAppBundleIdentifier: com.kisnner26.nexo
+        NSLocalNetworkUsageDescription: Nexo controla tu Mac por Wi-Fi.
+        NSBonjourServices: [_nexo._tcp]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.kisnner26.nexo.watchkitapp
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
